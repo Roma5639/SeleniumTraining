@@ -1,46 +1,40 @@
-
 import com.base.BaseTest;
-import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
-import okhttp3.internal.http.StatusLine;
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-//import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import com.codeborne.selenide.WebDriverRunner;
+import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Assert;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 import page.OpenPage;
 
-import javax.security.auth.login.Configuration;
-import com.codeborne.selenide.WebDriverRunner;
-
-
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-
-
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.time.Duration;
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+
+import org.apache.commons.httpclient.HttpStatus;
+
+import static org.apache.commons.lang3.ArrayUtils.isSorted;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.testng.Assert.assertEquals;
+
+//import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 
 public class TrainingTests extends BaseTest {
@@ -108,8 +102,6 @@ public class TrainingTests extends BaseTest {
 
         System.out.println(innerText + "  " + innerText2);
     }
-
-
 
 
     @Test
@@ -183,13 +175,13 @@ public class TrainingTests extends BaseTest {
         testSearchField.navigateToSite("http://the-internet.herokuapp.com/drag_and_drop");
         Thread.sleep(3000);
         WebElement un = getDriver().findElement(By.cssSelector(".column:nth-of-type(1)"));
-        Robot r=new Robot();
+        Robot r = new Robot();
         r.mouseMove(500, 350);
         Thread.sleep(2000);
-        Actions act=new Actions(getDriver());
-        WebElement From=getDriver().findElement(By.xpath("//*[@id='column-a']"));
+        Actions act = new Actions(getDriver());
+        WebElement From = getDriver().findElement(By.xpath("//*[@id='column-a']"));
         //Element on which need to drop.
-        WebElement To=getDriver().findElement(By.xpath("//*[@id='column-b']"));
+        WebElement To = getDriver().findElement(By.xpath("//*[@id='column-b']"));
         //Dragged and dropped.
         act.dragAndDrop(From, To).release().build().perform();
     }
@@ -205,17 +197,17 @@ public class TrainingTests extends BaseTest {
 //use to move cursor on particular element and passing control
 
 
-        //int xaxis = un.getLocation().x;
-        //int yaxis=un.getLocation().y;
-        //int width = un.getSize().width;
-       // int height= un.getSize().height;
+    //int xaxis = un.getLocation().x;
+    //int yaxis=un.getLocation().y;
+    //int width = un.getSize().width;
+    // int height= un.getSize().height;
 
-       // r.mouseMove(xaxis+width/2, yaxis+height/2+70);
+    // r.mouseMove(xaxis+width/2, yaxis+height/2+70);
 
-        // r.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-       // Thread.sleep(2000);
-       // r.mouseMove(500, 350);
-       // r.keyRelease(InputEvent.BUTTON1_DOWN_MASK);
+    // r.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+    // Thread.sleep(2000);
+    // r.mouseMove(500, 350);
+    // r.keyRelease(InputEvent.BUTTON1_DOWN_MASK);
 //        Actions act=new Actions(getDriver());
 //        act.clickAndHold(getDriver().findElement(By.xpath("//*[@id='column-a']")))
 //                .moveToElement(getDriver().findElement(By.xpath("//*[@id='column-b']")))
@@ -270,7 +262,7 @@ public class TrainingTests extends BaseTest {
     }
 
     @Test
-    public void entryAdd()  {
+    public void entryAdd() {
         OpenPage testSearchField = new OpenPage(getDriver());
         testSearchField.navigateToSite("http://the-internet.herokuapp.com/entry_ad");
         WebDriverWait waitModal = new WebDriverWait(getDriver(), 10);
@@ -280,12 +272,13 @@ public class TrainingTests extends BaseTest {
         waitModal.until(ExpectedConditions.visibilityOfAllElements(modalName));
         getDriver().findElement(By.xpath("//*[text() = 'Close']\n")).click();
     }
+
     @Test
     public void exitIntent() throws AWTException, InterruptedException {
         OpenPage testSearchField = new OpenPage(getDriver());
         testSearchField.navigateToSite("http://the-internet.herokuapp.com/exit_intent");
         Thread.sleep(3000);
-        Robot robot=new Robot();
+        Robot robot = new Robot();
         robot.mouseMove(400, 400);
         // robot.mouseMove(100, 300);
         Thread.sleep(3000);
@@ -296,12 +289,13 @@ public class TrainingTests extends BaseTest {
         Thread.sleep(3000);
         robot.mouseMove(400, 400);
         Thread.sleep(3000);
-        Actions act=new Actions(getDriver());
+        Actions act = new Actions(getDriver());
         act.click(getDriver().findElement(By.xpath("//*[text() = 'Close']\n")))
                 .release()
                 .build()
                 .perform();
     }
+
     @Test
     public void downloadFile() throws InterruptedException {
 
@@ -319,7 +313,7 @@ public class TrainingTests extends BaseTest {
         //ChromeOptions options = new ChromeOptions();
         //options.setExperimentalOption("prefs", prefs);
         //ChromeDriverManager.getInstance().setup();
-       // Configuration.browser = "chrome";
+        // Configuration.browser = "chrome";
         WebDriverRunner.setWebDriver(new ChromeDriver(options));
 
 
@@ -332,12 +326,317 @@ public class TrainingTests extends BaseTest {
         el.click();
 
         Thread.sleep(3000);
+    }
+
+    @Test
+    public void uploadFile() throws InterruptedException {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/upload");
+        getDriver().findElement(By.xpath("//*[@id=\"file-upload\"]")).sendKeys("/Users/romanbondarenko/Downloads/hr_report-2.zip");
+        Thread.sleep(3000);
+        getDriver().findElement(By.xpath("//*[@id=\"file-submit\"]")).click();
+
+    }
+
+    @Test
+    public void loginPage() throws InterruptedException {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/login");
+
+        getDriver().findElement(By.xpath("//*[@id=\"username\"]")).sendKeys("tomsmith");
+        getDriver().findElement(By.xpath("//*[@id=\"password\"]")).sendKeys("SuperSecretPassword!");
+
+        getDriver().findElement(By.xpath("//*[@type='submit']")).click();
+        //Thread.sleep(4000);
+
+        WebDriverWait waitMessage = new WebDriverWait(getDriver(), 10);
+        WebElement successMessage = getDriver().findElement(By.xpath("//*[@id='flash']"));
+        waitMessage.until(ExpectedConditions.visibilityOfAllElements(successMessage));
+
+        String congrats = getDriver().findElement(By.xpath("//*[@class='subheader']")).getText();
+        Assert.assertEquals("Welcome to the Secure Area. When you are done click logout below.", congrats);
+
+    }
+
+    @Test
+    public void horizontalSlider() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/horizontal_slider");
+
+
+        WebElement slider = getDriver().findElement(By.xpath("//*[@type='range']"));
+        Actions move = new Actions(getDriver());
+        Action action = move.dragAndDropBy(slider, 30, 0).build();
+        action.perform();
+    }
+
+    @Test
+    public void hoversCheck() throws AWTException, InterruptedException {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/hovers");
+
+        Actions hover = new Actions(getDriver());
+
+        WebElement elemToHover = getDriver().findElement(By.xpath("//*[@id=\"content\"]/div/div[2]/img"));
+
+        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(By.xpath("//*[@id=\"content\"]/div/div[2]/img")))
+                .click()
+                .build()
+                .perform();
+        Thread.sleep(2000);
+
+        Robot robot = new Robot();
+        robot.mouseMove(450, 465);
+
+        getDriver().findElement(By.xpath("//div/div[2]/div/a[contains(text(), 'View')] ")).click();
+    }
+
+    @Test
+    public void inputs() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/inputs");
+        getDriver().findElement(By.xpath("//input[@type='number']")).sendKeys("2345");
+    }
+
+    @Test
+    public void dropdownMenu() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/jqueryui/menu#");
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10);
+        WebElement dropdown = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='ui-id-2']")));
+        dropdown.click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='ui-id-4']"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='ui-id-8']"))).click();
+
+    }
+
+    @Test
+    public void jsAlerts() throws InterruptedException {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/javascript_alerts");
+        //FIRST ALERT
+        getDriver().findElement(By.xpath("//button[@onclick='jsAlert()']")).click();
+        Thread.sleep(2000);
+        getDriver().switchTo().alert().accept();
+        //SECOND ALERT
+        getDriver().findElement(By.xpath("//button[@onclick='jsConfirm()']")).click();
+        Thread.sleep(2000);
+        getDriver().switchTo().alert().accept();
+        Thread.sleep(3000);
+        //THIRD ALERT
+        getDriver().findElement(By.xpath("//button[@onclick='jsPrompt()']")).click();
+        Thread.sleep(3000);
+        Alert promptAlert = getDriver().switchTo().alert();
+        String alertText = promptAlert.getText();
+        System.out.println("Alert text is " + alertText);
+        //Send some text to the alert
+        promptAlert.sendKeys("Test");
+        Thread.sleep(2000);
+        promptAlert.accept();
+    }
+
+    @Test
+    public void newWindow() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/windows");
+        getDriver().findElement(By.xpath("//*[text()='Click Here']")).click();
+        //SWITCH TO THE NEW TAB
+        ArrayList<String> tabs2 = new ArrayList<String>(getDriver().getWindowHandles());
+        getDriver().switchTo().window(tabs2.get(1));
+        //ASSERT TEXT AND CLOSE THE NEW WINDOW
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10);
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@class='example']")));
+        String newWindow = getDriver().findElement(By.xpath("//*[@class='example']")).getText();
+        Assert.assertEquals("New Window", newWindow);
+        getDriver().close();
+        //BACK TO THE FIRST WINDOW
+        getDriver().switchTo().window(tabs2.get(0));
+
+    }
+
+    @Test
+    public void frames() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/nested_frames");
+        getDriver().switchTo().frame("frame-top").getPageSource();
+        String s = getDriver().switchTo().frame("frame-right").getPageSource();
+        System.out.println(s);
+
+    }
+
+    @Test
+    public void floatingMenu() throws InterruptedException {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/floating_menu");
+        JavascriptExecutor jse = (JavascriptExecutor) getDriver();
+        jse.executeScript("window.scrollBy(0, 6000)");
+        Thread.sleep(5000);
+        getDriver().findElement(By.xpath("//a[@href='#contact']")).click();
+    }
+
+    @Test
+    public void statusCodes() throws ClientProtocolException, IOException {
+//        OpenPage testSearchField = new OpenPage(getDriver());
+//        testSearchField.navigateToSite("http://the-internet.herokuapp.com/status_codes");
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpResponse response = client.execute(new HttpGet("http://the-internet.herokuapp.com/status_codes/404"));
+        int statusCode = response.getStatusLine().getStatusCode();
+        System.out.println(statusCode);
+    }
+
+    @Test
+    public void sortTable() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/tables");
+        getDriver().findElement(By.xpath("//*[@id=\"table1\"]/thead/tr/th[4]/span")).click();
+        WebElement table = getDriver().findElement(By.xpath("//*[@id=\"table1\"]/thead/tr/th[4]/span"));
+        List<WebElement> rows = table.findElements(By.xpath("//*[@id='table1']/tbody/tr/td[4]"));
+        String[] linkText = new String[rows.size()];
+        int i = 0;
+
+//Storing List elements text into String array
+        for (WebElement a : rows) {
+            linkText[i] = a.getText().replace("$", "");
+            i++;
+        }
+        //System.out.println("Strings = " + Arrays.toString(linkText));
+
+        double[] money = new double[linkText.length];
+        for (int j = 0; j < linkText.length; j++) {
+            money[j] = Double.parseDouble(linkText[j]);
+        }
+        System.out.println("doubles = " + Arrays.toString(money));
+
+        if (isSorted(money)) {
+            System.out.println("Is in order");
+        } else
+            System.out.println("Is NOT in order");
+
+
+        getDriver().quit();
+    }
+
+
+    @Test
+    public void keyPresses() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/key_presses");
+        String mySymbol = "m";
+        getDriver().findElement(By.xpath("//*[@id=\"target\"]")).sendKeys(mySymbol);
+        boolean stringsCheck;
+
+        String inputCheck = getDriver().findElement(By.xpath("//*[@id=\"result\"]")).getText();
+
+        stringsCheck = inputCheck.equalsIgnoreCase("You entered: "+ mySymbol);
+        System.out.println("entered symbol is equal to the returned one. Result:  " + stringsCheck );
 
 
 
     }
 
+
+    @Test
+    public void notificationMessage() throws InterruptedException {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://the-internet.herokuapp.com/notification_message_rendered");
+
+        //Press the "Click here" button
+        getDriver().findElement(By.xpath("//*[text()='Click here']")).click();
+        Thread.sleep(3000);
+
+        //Compare the notification
+        String actualMessage = getDriver().findElement(By.xpath("//*[@id=\"flash\"]")).getText().replace("×", "");
+        String expectedMessage = "Action unsuccesful, please try again";
+
+        assertEquals(actualMessage.trim(), expectedMessage.trim());
+
+
+
+    }
+
+
+
+
+    @Test
+    public void purchaseAndCartChek() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://automationpractice.com/");
+
+        //Open the T-shirts section
+        getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[3]/a")).click();
+        WebDriverWait wait = new WebDriverWait(getDriver(), 10);
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//img[@class='logo img-responsive']")));
+
+        //hover the needed item
+        WebElement elemToHover = getDriver().findElement(By.xpath("//img[@title='Faded Short Sleeve T-shirts']"));
+
+        Actions hover = new Actions(getDriver());
+        //add the item to the cart
+        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
+                .click()
+                .build()
+                .perform();
+
+        //wait until the item will be added into the cart
+        WebDriverWait waitContinue = new WebDriverWait(getDriver(), 10);
+        waitContinue.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//i[@class='icon-ok']")));
+
+        //press "Continue" button
+        getDriver().findElement(By.xpath("//span[@title='Continue shopping']")).click();
+
+        WebElement dresses = getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/a"));
+
+        //scroll the page up (to see the top nav menu)
+        JavascriptExecutor jse = (JavascriptExecutor) getDriver();
+        jse.executeScript("window.scrollBy(0, - 2000)");
+
+        //hover the dress item to see "add to cart" button
+        Actions dressesHover = new Actions(getDriver());
+        dressesHover.moveToElement(dresses).build().perform();
+
+        WebDriverWait waitDresses = new WebDriverWait(getDriver(), 10);
+
+        //wait the dress section
+        waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/ul/li[2]/a")));
+        getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/ul/li[2]/a")).click();
+
+        WebElement dressToHover = getDriver().findElement(By.xpath("//img[@alt='Printed Dress']"));
+
+        //add the dress to the cart
+        hover.moveToElement(dressToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
+                .click()
+                .build()
+                .perform();
+        //wait the confirmation the dress was added successfully
+        waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//i[@class='icon-ok']")));
+
+        //make sure we have 2 items in the cart, now
+        String cartString = getDriver().findElement(By.xpath("//*[@id='layer_cart']//span[@style='display: inline;']")).getText();
+        Assert.assertEquals("There are 2 items in your cart.", cartString);
+
+    }
+
+    @Test
+    public void storeInfoCheck() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("http://automationpractice.com/");
+
+        //Address check
+        String addressCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[1]")).getText();
+        Assert.assertEquals("Selenium Framework, Research Triangle Park, North Carolina, USA", addressCheck);
+
+        //Phone number check
+        String phoneCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[2]")).getText();
+        Assert.assertEquals("Call us now: (347) 466-7432", phoneCheck);
+
+        //Email  check
+        String emailCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[3]")).getText();
+        Assert.assertEquals("Email: support@seleniumframework.com", emailCheck);
+    }
+
 }
+
 
 
 

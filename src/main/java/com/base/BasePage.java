@@ -21,4 +21,22 @@ public class BasePage {
         driver.get(site);
     }
 
+    {
+    }
+        // Determine if an array is sorted in ascending order
+        //
+        public  boolean isSorted ( double[] array )
+        {
+            boolean inOrder = true;
+
+            // scan the list starting at index 0
+            for (int j = 0; j < array.length - 1 && inOrder; j++) {
+                // check the pair starting at j
+                inOrder = array[j] <= array[j + 1];
+            }
+
+            return inOrder;
+        }
+
+
 }
