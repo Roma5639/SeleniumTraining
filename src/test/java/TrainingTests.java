@@ -528,9 +528,8 @@ public class TrainingTests extends BaseTest {
 
         String inputCheck = getDriver().findElement(By.xpath("//*[@id=\"result\"]")).getText();
 
-        stringsCheck = inputCheck.equalsIgnoreCase("You entered: "+ mySymbol);
-        System.out.println("entered symbol is equal to the returned one. Result:  " + stringsCheck );
-
+        stringsCheck = inputCheck.equalsIgnoreCase("You entered: " + mySymbol);
+        System.out.println("entered symbol is equal to the returned one. Result:  " + stringsCheck);
 
 
     }
@@ -552,10 +551,7 @@ public class TrainingTests extends BaseTest {
         assertEquals(actualMessage.trim(), expectedMessage.trim());
 
 
-
     }
-
-
 
 
     @Test
@@ -635,6 +631,40 @@ public class TrainingTests extends BaseTest {
         Assert.assertEquals("Email: support@seleniumframework.com", emailCheck);
     }
 
+    @Test
+    public void zadacha9() {
+        OpenPage testSearchField = new OpenPage(getDriver());
+        testSearchField.navigateToSite("https://www.powells.com/");
+        getDriver().findElement(By.xpath("//*[@id='keyword']")).sendKeys("sartre a life");
+        getDriver().findElement(By.xpath("//button[@class='btn btn-default'] ")).click();
+
+        WebElement storeItems = getDriver().findElement(By.xpath("//*[@id='pwls_srchresult']"));
+        List<WebElement> linkList = storeItems.findElements(By.xpath("//div[@class='reg-price']"));
+
+        for (WebElement link : linkList) {
+            link.getText();
+        }
+        double[] prices = new double[linkList.size()];
+        for (int j = 0; j < linkList.size(); j++) {
+            prices[j] = Double.parseDouble(linkList.get(j).getText().replace("$", ""));
+        }
+        int count = 0;
+        double sum = 0;
+        for (int x = 0; x < prices.length; x++) {
+            if (prices[x] > 20) {
+                count++;
+                {
+                    sum += prices[x];
+                }
+
+            }
+        }
+        System.out.print("All items according to the search result => ");
+        System.out.println(Arrays.toString(prices));
+        System.out.println("The number of books more expensive than 20 is: " + count);
+        System.out.println("The amount of all books more expensive than 20 is: $" + sum);
+
+    }
 }
 
 
