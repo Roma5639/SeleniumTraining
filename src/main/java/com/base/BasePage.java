@@ -1,6 +1,9 @@
 package com.base;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class BasePage {
 
@@ -37,4 +40,36 @@ public class BasePage {
 //        elementText = driver.findElement(By.xpath()).getText();
 //        return elementText;
 //    }
+
+    public void click(By by){
+        driver.findElement(by).click();
+    }
+
+    public void waitForVisibility(By by){
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+
+    }
+
+    public void moveToElement(By by){
+        Actions hover = new Actions(driver);
+        //add the item to the cart
+
+        WebElement webElement = driver.findElement(by);
+        hover.moveToElement(webElement)
+                .build()
+                .perform();
+    }
+    public void moveToElementAndClick(By by){
+        Actions hover = new Actions(driver);
+        //add the item to the cart
+
+        WebElement webElement = driver.findElement(by);
+        hover.moveToElement(webElement)
+                .click()
+                .build()
+                .perform();
+    }
+
+
 }
