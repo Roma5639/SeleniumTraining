@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.List;
 
 import org.apache.commons.httpclient.HttpStatus;
+import page.Zadacha8PageObject;
 
 import static org.apache.commons.lang3.ArrayUtils.isSorted;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -561,24 +562,25 @@ public class TrainingTests extends BaseTest {
 
         //Open the T-shirts section
 
-        getDriver().findElement(tShirtsButton).click();
+        Zadacha8PageObject zadacha8PageObject = new Zadacha8PageObject(getDriver());
+        zadacha8PageObject.tShirtsClick();
         //getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[3]/a")).click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), 10);
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(brandLogo));
+        zadacha8PageObject.waitForBrandLogo();
         //wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//img[@class='logo img-responsive']")));
+        zadacha8PageObject.hoverTShirtsAndClickAddToCart();
 
-        //hover the needed item
-        WebElement elemToHover = getDriver().findElement(tShirtItem);
-        //WebElement elemToHover = getDriver().findElement(By.xpath("//img[@title='Faded Short Sleeve T-shirts']"));
-
+//        //hover the needed item
+//        WebElement elemToHover = getDriver().findElement(tShirtItem);
+//        //WebElement elemToHover = getDriver().findElement(By.xpath("//img[@title='Faded Short Sleeve T-shirts']"));
+//
         Actions hover = new Actions(getDriver());
-        //add the item to the cart
-
-        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(addToCartButton))
-                .click()
-                .build()
-                .perform();
+//        //add the item to the cart
+//
+//        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(addToCartButton))
+//                .click()
+//                .build()
+//                .perform();
 //        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
 //                .click()
 //                .build()
