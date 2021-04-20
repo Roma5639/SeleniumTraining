@@ -1,3 +1,4 @@
+import com.base.BasePage;
 import com.base.BaseTest;
 import com.codeborne.selenide.WebDriverRunner;
 import org.apache.hc.client5.http.ClientProtocolException;
@@ -8,10 +9,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Assert;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Action;
@@ -557,31 +555,46 @@ public class TrainingTests extends BaseTest {
     @Test
     public void purchaseAndCartChek() {
         OpenPage testSearchField = new OpenPage(getDriver());
-        testSearchField.navigateToSite("http://automationpractice.com/");
+
+        testSearchField.navigateToSite(onlineClothesStore);
+        //testSearchField.navigateToSite("http://automationpractice.com/");
 
         //Open the T-shirts section
-        getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[3]/a")).click();
+
+        getDriver().findElement(tShirtsButton).click();
+        //getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[3]/a")).click();
+
         WebDriverWait wait = new WebDriverWait(getDriver(), 10);
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//img[@class='logo img-responsive']")));
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(brandLogo));
+        //wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//img[@class='logo img-responsive']")));
 
         //hover the needed item
-        WebElement elemToHover = getDriver().findElement(By.xpath("//img[@title='Faded Short Sleeve T-shirts']"));
+        WebElement elemToHover = getDriver().findElement(tShirtItem);
+        //WebElement elemToHover = getDriver().findElement(By.xpath("//img[@title='Faded Short Sleeve T-shirts']"));
 
         Actions hover = new Actions(getDriver());
         //add the item to the cart
-        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
+
+        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(addToCartButton))
                 .click()
                 .build()
                 .perform();
+//        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
+//                .click()
+//                .build()
+//                .perform();
 
         //wait until the item will be added into the cart
         WebDriverWait waitContinue = new WebDriverWait(getDriver(), 10);
-        waitContinue.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//i[@class='icon-ok']")));
+        waitContinue.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(successMessage));
+        //waitContinue.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//i[@class='icon-ok']")));
 
         //press "Continue" button
-        getDriver().findElement(By.xpath("//span[@title='Continue shopping']")).click();
+        getDriver().findElement(continueButton).click();
+        //getDriver().findElement(By.xpath("//span[@title='Continue shopping']")).click();
 
-        WebElement dresses = getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/a"));
+        WebElement dresses = getDriver().findElement(dressesButton);
+        //WebElement dresses = getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/a"));
 
         //scroll the page up (to see the top nav menu)
         JavascriptExecutor jse = (JavascriptExecutor) getDriver();
@@ -594,21 +607,37 @@ public class TrainingTests extends BaseTest {
         WebDriverWait waitDresses = new WebDriverWait(getDriver(), 10);
 
         //wait the dress section
-        waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/ul/li[2]/a")));
-        getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/ul/li[2]/a")).click();
+
+        waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(blockTopMenu));
+        //waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/ul/li[2]/a")));
+
+        getDriver().findElement(eveningDressButton).click();
+        //getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/ul/li[2]/a")).click();
 
         WebElement dressToHover = getDriver().findElement(By.xpath("//img[@alt='Printed Dress']"));
 
         //add the dress to the cart
-        hover.moveToElement(dressToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
+
+        hover.moveToElement(dressToHover).moveToElement(getDriver().findElement(addToCartButton))
                 .click()
                 .build()
                 .perform();
+
+//        hover.moveToElement(dressToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
+//                .click()
+//                .build()
+//                .perform();
         //wait the confirmation the dress was added successfully
-        waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//i[@class='icon-ok']")));
+
+
+        waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(successMessage));
+        //waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//i[@class='icon-ok']")));
 
         //make sure we have 2 items in the cart, now
-        String cartString = getDriver().findElement(By.xpath("//*[@id='layer_cart']//span[@style='display: inline;']")).getText();
+
+
+        String cartString = getDriver().findElement(cartSuccessText).getText();
+        //String cartString = getDriver().findElement(By.xpath("//*[@id='layer_cart']//span[@style='display: inline;']")).getText();
         Assert.assertEquals("There are 2 items in your cart.", cartString);
 
     }
@@ -616,30 +645,53 @@ public class TrainingTests extends BaseTest {
     @Test
     public void storeInfoCheck() {
         OpenPage testSearchField = new OpenPage(getDriver());
-        testSearchField.navigateToSite("http://automationpractice.com/");
 
-        //Address check
-        String addressCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[1]")).getText();
-        Assert.assertEquals("Selenium Framework, Research Triangle Park, North Carolina, USA", addressCheck);
+        testSearchField.navigateToSite(onlineClothesStore);
+        //testSearchField.navigateToSite("http://automationpractice.com/");
 
-        //Phone number check
-        String phoneCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[2]")).getText();
-        Assert.assertEquals("Call us now: (347) 466-7432", phoneCheck);
 
-        //Email  check
-        String emailCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[3]")).getText();
-        Assert.assertEquals("Email: support@seleniumframework.com", emailCheck);
+        //ADDRESS CHECK
+        String addressCheck = getDriver().findElement(addressField).getText();
+        //String addressCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[1]")).getText();
+        Assert.assertEquals(addressCheck, addressText);
+        //Assert.assertEquals("Selenium Framework, Research Triangle Park, North Carolina, USA", addressCheck);
+
+
+        //PHONE NUMBER CHECK
+        String phoneCheck = getDriver().findElement(phoneField).getText();
+        //String phoneCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[2]")).getText();
+        Assert.assertEquals(phoneText, phoneCheck);
+        //Assert.assertEquals("Call us now: (347) 466-7432", phoneCheck);
+
+
+        //EMAIL  CHECK
+        //BasePage.textFromElement(emailField);
+        String emailCheck = getDriver().findElement(emailField).getText();
+        //String emailCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[3]")).getText();
+        //Assert.assertEquals(emailText, emailField);
+        Assert.assertEquals(emailText, emailCheck);
+        //Assert.assertEquals("Email: support@seleniumframework.com", emailCheck);
     }
 
     @Test
     public void zadacha9() {
         OpenPage testSearchField = new OpenPage(getDriver());
-        testSearchField.navigateToSite("https://www.powells.com/");
-        getDriver().findElement(By.xpath("//*[@id='keyword']")).sendKeys("sartre a life");
-        getDriver().findElement(By.xpath("//button[@class='btn btn-default'] ")).click();
 
-        WebElement storeItems = getDriver().findElement(By.xpath("//*[@id='pwls_srchresult']"));
-        List<WebElement> linkList = storeItems.findElements(By.xpath("//div[@class='reg-price']"));
+        testSearchField.navigateToSite(bookSiteURL);
+        //testSearchField.navigateToSite("https://www.powells.com/");
+
+        getDriver().findElement(keywordBy).sendKeys("sartre a life");
+        //getDriver().findElement(By.xpath("//*[@id='keyword']")).sendKeys("sartre a life");
+
+        getDriver().findElement(searchButton).click();
+        //getDriver().findElement(By.xpath("//button[@class='btn btn-default'] ")).click();
+
+        WebElement storeItems = getDriver().findElement(searchResultGrid);
+        //WebElement storeItems = getDriver().findElement(By.xpath("//*[@id='pwls_srchresult']"));
+
+        List<WebElement> linkList = storeItems.findElements(prices);
+        //List<WebElement> linkList = storeItems.findElements(By.xpath("//div[@class='reg-price']"));
+
 
         for (WebElement link : linkList) {
             link.getText();
