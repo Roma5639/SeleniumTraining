@@ -27,6 +27,9 @@ import java.util.*;
 import java.util.List;
 
 import org.apache.commons.httpclient.HttpStatus;
+import page.Zadacha8PageObject;
+import page.Zadacha9PageObject;
+import page.ZadachaStoreInfoCheck;
 
 import static org.apache.commons.lang3.ArrayUtils.isSorted;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -559,162 +562,73 @@ public class TrainingTests extends BaseTest {
         testSearchField.navigateToSite(onlineClothesStore);
         //testSearchField.navigateToSite("http://automationpractice.com/");
 
-        //Open the T-shirts section
 
-        getDriver().findElement(tShirtsButton).click();
-        //getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[3]/a")).click();
+        Zadacha8PageObject zadacha8PageObject = new Zadacha8PageObject(getDriver());
+        zadacha8PageObject.tShirtsClick();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), 10);
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(brandLogo));
-        //wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//img[@class='logo img-responsive']")));
+        zadacha8PageObject.waitForLogo();
 
         //hover the needed item
-        WebElement elemToHover = getDriver().findElement(tShirtItem);
-        //WebElement elemToHover = getDriver().findElement(By.xpath("//img[@title='Faded Short Sleeve T-shirts']"));
-
-        Actions hover = new Actions(getDriver());
-        //add the item to the cart
-
-        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(addToCartButton))
-                .click()
-                .build()
-                .perform();
-//        hover.moveToElement(elemToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
-//                .click()
-//                .build()
-//                .perform();
+        zadacha8PageObject.hoverTShirtsAndClickAddToCart();
 
         //wait until the item will be added into the cart
-        WebDriverWait waitContinue = new WebDriverWait(getDriver(), 10);
-        waitContinue.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(successMessage));
-        //waitContinue.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//i[@class='icon-ok']")));
+        zadacha8PageObject.waitForSuccessMessage();
 
         //press "Continue" button
-        getDriver().findElement(continueButton).click();
-        //getDriver().findElement(By.xpath("//span[@title='Continue shopping']")).click();
-
-        WebElement dresses = getDriver().findElement(dressesButton);
-        //WebElement dresses = getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/a"));
+        zadacha8PageObject.continueButtonClick();
 
         //scroll the page up (to see the top nav menu)
-        JavascriptExecutor jse = (JavascriptExecutor) getDriver();
-        jse.executeScript("window.scrollBy(0, - 2000)");
+        zadacha8PageObject.scrollPageDown();
 
         //hover the dress item to see "add to cart" button
-        Actions dressesHover = new Actions(getDriver());
-        dressesHover.moveToElement(dresses).build().perform();
-
-        WebDriverWait waitDresses = new WebDriverWait(getDriver(), 10);
+        zadacha8PageObject.dressesHover();
 
         //wait the dress section
+        zadacha8PageObject.waitForBlockTopMenu();
 
-        waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(blockTopMenu));
-        //waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/ul/li[2]/a")));
-
-        getDriver().findElement(eveningDressButton).click();
-        //getDriver().findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[2]/ul/li[2]/a")).click();
-
-        WebElement dressToHover = getDriver().findElement(By.xpath("//img[@alt='Printed Dress']"));
+        zadacha8PageObject.eveningDressClick();
 
         //add the dress to the cart
+        zadacha8PageObject.hoverDressAndClickAddToCart();
 
-        hover.moveToElement(dressToHover).moveToElement(getDriver().findElement(addToCartButton))
-                .click()
-                .build()
-                .perform();
-
-//        hover.moveToElement(dressToHover).moveToElement(getDriver().findElement(By.xpath("//*[text()='Add to cart']")))
-//                .click()
-//                .build()
-//                .perform();
         //wait the confirmation the dress was added successfully
-
-
-        waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(successMessage));
-        //waitDresses.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//i[@class='icon-ok']")));
+        zadacha8PageObject.waitForSuccessMessage();
 
         //make sure we have 2 items in the cart, now
-
-
-        String cartString = getDriver().findElement(cartSuccessText).getText();
-        //String cartString = getDriver().findElement(By.xpath("//*[@id='layer_cart']//span[@style='display: inline;']")).getText();
-        Assert.assertEquals("There are 2 items in your cart.", cartString);
+        zadacha8PageObject.cartTextCheck();
 
     }
 
     @Test
     public void storeInfoCheck() {
         OpenPage testSearchField = new OpenPage(getDriver());
-
+        ZadachaStoreInfoCheck zadachaStoreInfoCheck = new ZadachaStoreInfoCheck(getDriver());
         testSearchField.navigateToSite(onlineClothesStore);
-        //testSearchField.navigateToSite("http://automationpractice.com/");
 
 
         //ADDRESS CHECK
-        String addressCheck = getDriver().findElement(addressField).getText();
-        //String addressCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[1]")).getText();
-        Assert.assertEquals(addressCheck, addressText);
-        //Assert.assertEquals("Selenium Framework, Research Triangle Park, North Carolina, USA", addressCheck);
-
+        zadachaStoreInfoCheck.addressFieldCheck();
 
         //PHONE NUMBER CHECK
-        String phoneCheck = getDriver().findElement(phoneField).getText();
-        //String phoneCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[2]")).getText();
-        Assert.assertEquals(phoneText, phoneCheck);
-        //Assert.assertEquals("Call us now: (347) 466-7432", phoneCheck);
-
+        zadachaStoreInfoCheck.phoneFieldCheck();
 
         //EMAIL  CHECK
-        //BasePage.textFromElement(emailField);
-        String emailCheck = getDriver().findElement(emailField).getText();
-        //String emailCheck = getDriver().findElement(By.xpath("//*[@id=\"block_contact_infos\"]/div/ul/li[3]")).getText();
-        //Assert.assertEquals(emailText, emailField);
-        Assert.assertEquals(emailText, emailCheck);
-        //Assert.assertEquals("Email: support@seleniumframework.com", emailCheck);
+        zadachaStoreInfoCheck.emailFieldCheck();
+
     }
 
     @Test
     public void zadacha9() {
         OpenPage testSearchField = new OpenPage(getDriver());
+        Zadacha9PageObject zadacha9PageObject = new Zadacha9PageObject(getDriver());
 
-        testSearchField.navigateToSite(bookSiteURL);
-        //testSearchField.navigateToSite("https://www.powells.com/");
+        testSearchField.navigateToSite(zadacha9PageObject.bookSiteURL);
 
-        getDriver().findElement(keywordBy).sendKeys("sartre a life");
-        //getDriver().findElement(By.xpath("//*[@id='keyword']")).sendKeys("sartre a life");
+        zadacha9PageObject.inputText();
 
-        getDriver().findElement(searchButton).click();
-        //getDriver().findElement(By.xpath("//button[@class='btn btn-default'] ")).click();
+        zadacha9PageObject.clickSearchButton();
 
-        WebElement storeItems = getDriver().findElement(searchResultGrid);
-        //WebElement storeItems = getDriver().findElement(By.xpath("//*[@id='pwls_srchresult']"));
-
-        List<WebElement> linkList = storeItems.findElements(prices);
-        //List<WebElement> linkList = storeItems.findElements(By.xpath("//div[@class='reg-price']"));
-
-
-        for (WebElement link : linkList) {
-            link.getText();
-        }
-        double[] prices = new double[linkList.size()];
-        for (int j = 0; j < linkList.size(); j++) {
-            prices[j] = Double.parseDouble(linkList.get(j).getText().replace("$", ""));
-        }
-        int count = 0;
-        double sum = 0;
-        for (int x = 0; x < prices.length; x++) {
-            if (prices[x] > 20) {
-                count++;
-                {
-                    sum += prices[x];
-                }
-
-            }
-        }
-        System.out.print("All items according to the search result => ");
-        System.out.println(Arrays.toString(prices));
-        System.out.println("The number of books more expensive than 20 is: " + count);
-        System.out.println("The amount of all books more expensive than 20 is: $" + sum);
+        zadacha9PageObject.sortColumnOrderCheck();
 
     }
 }
